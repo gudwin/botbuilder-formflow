@@ -77,6 +77,11 @@ bot.dialog('/', [
 formFlow.create(bot, '/form', loginForm );
 ```
 
+## Installation
+
+```
+    npm install --save botbuilder-formflow
+```
 
 ## Tests
  

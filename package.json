@@ -2,9 +2,9 @@
   "engines": {
     "node": "7.8.0"
   },
-  "name": "jjd",
+  "name": "botbuilder-formflow",
   "version": "0.1.0",
-  "description": "Simple workflow library for Microsoft Bot Builder",
+  "description": "Form flow with subdialogs",
   "main": "botbuilder-formflow.js",
   "dependencies": {
     "botbuilder": "^3.8.2"
@@ -18,9 +18,16 @@
     "sprintf": "^0.1.5"
   },
   "scripts": {
-    "test": "node ./spec/testRunner.js --NODE_ENV=tests --NODE_DEBUG=botbuilder"
+    "test": "node ./spec/testRunner.js ",
+    "test_debug": "node ./spec/testRunner.js --NODE_DEBUG=botbuilder"
   },
-  "keywords": ["botbuilder","formflow","chatbots"],
+  "keywords": [
+    "botbuilder",
+    "formflow",
+    "subdialog",
+    "chatbot",
+    "mbf"
+  ],
   "author": "Dmitry Shevchenko",
   "license": "GNU 3.0"
 }
