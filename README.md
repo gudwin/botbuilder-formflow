@@ -1,7 +1,9 @@
 # botbuilder-formflow
 Form flow support for Microsoft Bot Framework. 
 
-Unfortunately, this document still in a progress
+Unfortunately, this document still in a progress. Please use tests as a documentation for now. 
+
+Tests located at **spec/**** folder. 
 
 ## Supported prompts
 
