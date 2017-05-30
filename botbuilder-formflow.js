@@ -192,7 +192,7 @@ const getFormFlowWrapper = function (bot, config) {
     let dialogId = isDialogName ? item.dialog : '/' + uuid.v4();
 
     flow.push((session, args, next) => {
-      if (results[fieldName]) {
+      if ("undefined" != typeof results[fieldName]) {
         next({
           resumed: builder.ResumeReason.forward,
           response: null
