@@ -87,7 +87,7 @@ const extractValue = function (session, response, itemConfig) {
       case 'time' :
         entities = builder.PromptRecognizers.recognizeTimes(session);
         let result = entities[0].resolution.start;
-        result.setMilliseconds( 0 );
+        result.setMilliseconds(0);
         return result;
         break;
       case 'choice' :
@@ -153,7 +153,7 @@ const displayResult = function (session, item, result) {
 const buildFieldDialog = function (bot, id, item) {
   let firstRun = true;
   if (matchItem(item, 'dialog', () => !Array.isArray(item.dialog))) {
-    return ;
+    return;
   }
 
   if (matchItem(item, 'dialog', () => Array.isArray(item.dialog))) {
@@ -220,8 +220,8 @@ const getFormFlowWrapper = function (bot, config) {
 const validateConfig = function (config) {
 
   config.forEach((item, i) => {
-    let throwError = ( message ) => {
-      throw new Error( message + `\nObject with issues: ${JSON.stringify(item, null, 4)})`);
+    let throwError = (message) => {
+      throw new Error(message + `\nObject with issues: ${JSON.stringify(item, null, 4)})`);
     }
 
     if (!(item instanceof Object )) {
@@ -261,11 +261,6 @@ module.exports.RequiredProperties = RequiredProperties;
 module.exports.create = function (bot, dialogName, config) {
   validateConfig(config);
   let formFlow = getFormFlowWrapper(bot, config);
-  //console.log(`////////////// FORM FLOW  ${dialogName} ///////////////`);
-  //formFlow.forEach( ( item ) => {
-  //  console.log( item.toString());
-  //})
-  console.log( `FormFlow Dialog - ${dialogName}`);
   bot.dialog(dialogName, formFlow);
   return formFlow;
 };

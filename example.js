@@ -1,23 +1,3 @@
-# botbuilder-formflow
-Form flow support for Microsoft Bot Framework. 
-
-Unfortunately, this document still in a progress
-
-## Supported prompts
-
-+ choices  
-+ confirm
-+ dialog 
-+ email
-+ number
-+ text
-+ time
-+ url
-+ custom validator 
-  
-## Usage Example
-
-```javascript
 const builder = require('botbuilder');
 const formFlow = require('./botbuilder-formflow');
 let loginForm = [
@@ -75,11 +55,3 @@ bot.dialog('/', [
   }
 ]);
 formFlow.create(bot, '/form', loginForm );
-```
-
-
-## Tests
- 
-```
-    npm test
-```
