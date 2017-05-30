@@ -1,0 +1,26 @@
+{
+  "engines": {
+    "node": "7.8.0"
+  },
+  "name": "jjd",
+  "version": "0.1.0",
+  "description": "Simple workflow library for Microsoft Bot Builder",
+  "main": "botbuilder-formflow.js",
+  "dependencies": {
+    "botbuilder": "^3.8.2"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "jasmine": "^2.5.3",
+    "jasmine-terminal-reporter": "^1.0.3",
+    "jshint": "^2.9.4",
+    "node-uuid": "^1.4.8",
+    "sprintf": "^0.1.5"
+  },
+  "scripts": {
+    "test": "node ./spec/testRunner.js --NODE_ENV=tests --NODE_DEBUG=botbuilder"
+  },
+  "keywords": ["botbuilder","formflow","chatbots"],
+  "author": "Dmitry Shevchenko",
+  "license": "GNU 3.0"
+}
