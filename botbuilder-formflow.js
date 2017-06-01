@@ -1,4 +1,4 @@
-const SupportedTypes = ['text', 'number', 'confirm', 'email', 'time', 'url', 'choice', 'dialog'];
+const SupportedTypes = ['text', 'number', 'boolean', 'confirm', 'email', 'time', 'url', 'choice', 'dialog'];
 const RequiredProperties = ['id', 'type'];
 const uuid = require('node-uuid');
 const builder = require('botbuilder');
@@ -46,6 +46,7 @@ const isValid = function (session, response, itemConfig) {
       case 'number' :
         return builder.PromptRecognizers.recognizeNumbers(session, response.response).length > 0;
         break;
+      case 'boolean':
       case 'confirm' :
         return [true, false].lastIndexOf(response.response) > -1;
         break;
@@ -77,9 +78,10 @@ const extractValue = function (session, response, itemConfig) {
       case 'number' :
         return builder.PromptRecognizers.recognizeNumbers(session, response.response)[0].entity
         break;
-      case 'text' :
-      case 'email' :
+      case 'text':
+      case 'email':
       case 'url' :
+      case 'boolean':
       case 'confirm' :
       case 'dialog' :
         return response.response;
@@ -99,10 +101,17 @@ const extractValue = function (session, response, itemConfig) {
     }
   }
 };
-const displayPrompt = function (session, item, message) {
+const displayPrompt = function (session, item, isErrorPrompt) {
+  let message = isErrorPrompt ? item.errorPrompt : item.prompt;
   if ("function" == typeof message) {
     return message.call(null, session, item, message)
   } else {
+    if (Array.isArray(message)) {
+      message = message.slice();
+      while (message.length > 1) {
+        session.send(message.shift());
+      }
+    }
     switch (item.type) {
       case 'number':
       case 'text':
@@ -110,6 +119,7 @@ const displayPrompt = function (session, item, message) {
       case 'url':
         builder.Prompts.text(session, message);
         break;
+      case 'boolean':
       case 'confirm' :
         builder.Prompts.confirm(session, message, {
           listStyle: builder.ListStyle.buttons,
@@ -136,7 +146,7 @@ const displayResult = function (session, item, result) {
   if (item.response) {
     if ("function" == typeof item.response) {
       item.response.call(null, session, item, result);
-    } else if ("confirm" == item.type) {
+    } else if (["boolean", "confirm"].indexOf(item.type) > -1) {
       var locale = session.preferredLocale();
       var yes = session.localizer.gettext(locale, 'confirm_yes', 'BotBuilder');
       var no = session.localizer.gettext(locale, 'confirm_no', 'BotBuilder');
@@ -151,7 +161,6 @@ const displayResult = function (session, item, result) {
 }
 
 const buildFieldDialog = function (bot, id, item) {
-  let firstRun = true;
   if (matchItem(item, 'dialog', () => !Array.isArray(item.dialog))) {
     return;
   }
@@ -160,9 +169,9 @@ const buildFieldDialog = function (bot, id, item) {
     bot.dialog(id, item.dialog);
   } else {
     bot.dialog(id, [
-      (session) => {
-        firstRun ? displayPrompt(session, item, item.prompt) : displayPrompt(session, item, item.errorPrompt);
-        firstRun = false;
+      (session, args) => {
+        let isErrorPrompt = args && ( builder.ResumeReason.reprompt == args.resumed );
+        displayPrompt(session, item, isErrorPrompt);
       },
       (session, response) => {
         if (isValid(session, response, item)) {
@@ -172,7 +181,9 @@ const buildFieldDialog = function (bot, id, item) {
             response: extractValue(session, response, item)
           });
         } else {
-          session.replaceDialog(id);
+          session.replaceDialog(id, {
+            resumed: builder.ResumeReason.reprompt
+          });
         }
       }
     ]);
