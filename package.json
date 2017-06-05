@@ -3,7 +3,7 @@
     "node": "7.8.0"
   },
   "name": "botbuilder-formflow",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Form flow with subdialogs",
   "main": "botbuilder-formflow.js",
   "dependencies": {
@@ -20,6 +20,14 @@
   "scripts": {
     "test": "node ./spec/testRunner.js ",
     "test_debug": "node ./spec/testRunner.js --NODE_DEBUG=botbuilder"
+  },
+  "bugs": {
+    "url": "https://github.com/gudwin/botbuilder-formflow/issues",
+    "email": "d@dd-team.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gudwin/botbuilder-formflow.git"
   },
   "keywords": [
     "botbuilder",

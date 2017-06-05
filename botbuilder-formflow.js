@@ -2,194 +2,10 @@ const SupportedTypes = ['text', 'number', 'boolean', 'confirm', 'email', 'time',
 const RequiredProperties = ['id', 'type'];
 const uuid = require('node-uuid');
 const builder = require('botbuilder');
-const sprintf = require('sprintf');
+const buildFieldDialog = require('./src/buildFieldDialog');
+const matchItem = require('./src/matchItem');
+const getDefaultValidatorForType = require('./src/getDefaultValidatorForType');
 
-const matchItem = function (item, type, callback) {
-  return ( item.type == type ) && (callback.call(null));
-}
-const choicesToList = function (choices) {
-  let result = [];
-  if (choices) {
-    if (Array.isArray(choices)) {
-      choices.forEach(function (value) {
-        if (typeof value === 'string') {
-          result.push({value: value});
-        }
-        else {
-          result.push(value);
-        }
-      });
-    }
-    else if (typeof choices === 'string') {
-      choices.split('|').forEach(function (value) {
-        result.push({value: value});
-      });
-    }
-    else {
-      for (var key in choices) {
-        if (choices.hasOwnProperty(key)) {
-          result.push({value: key});
-        }
-      }
-    }
-  }
-  return result;
-}
-const isValid = function (session, response, itemConfig) {
-  if ("function" == typeof itemConfig.validator) {
-    return itemConfig.validator.call(null, session, response, itemConfig)
-  } else {
-    switch (itemConfig.type) {
-      case 'text' :
-        return response.response.length > 0;
-        break;
-      case 'number' :
-        return builder.PromptRecognizers.recognizeNumbers(session, response.response).length > 0;
-        break;
-      case 'boolean':
-      case 'confirm' :
-        return [true, false].lastIndexOf(response.response) > -1;
-        break;
-      case 'time' :
-        return builder.PromptRecognizers.recognizeTimes(session).length > 0
-        break;
-      case 'email' :
-        return /^\S+@\S+$/.test(response.response);
-        break;
-      case 'url' :
-        return /^(ftp|http|https):\/\/[^ "]+$/.test(response.response);
-        break;
-      case 'choice' :
-        let entities = builder.PromptRecognizers.recognizeChoices(response.response.entity, choicesToList(itemConfig.choices));
-        return entities.length > 0
-        break;
-      default:
-        throw new Error(`unknown type - ${itemConfig.type}`);
-    }
-  }
-};
-const extractValue = function (session, response, itemConfig) {
-  if ("function" == typeof itemConfig.extractor) {
-    return itemConfig.extractor.call(null, session, response)
-  } else {
-    let text = session.message.text.trim();
-    let entities;
-    switch (itemConfig.type) {
-      case 'number' :
-        return builder.PromptRecognizers.recognizeNumbers(session, response.response)[0].entity
-        break;
-      case 'text':
-      case 'email':
-      case 'url' :
-      case 'boolean':
-      case 'confirm' :
-      case 'dialog' :
-        return response.response;
-        break;
-      case 'time' :
-        entities = builder.PromptRecognizers.recognizeTimes(session);
-        let result = entities[0].resolution.start;
-        result.setMilliseconds(0);
-        return result;
-        break;
-      case 'choice' :
-        entities = builder.PromptRecognizers.recognizeChoices(response.response.entity, choicesToList(itemConfig.choices));
-        return entities[0].entity;
-        break;
-      default:
-        throw new Error(`unknown type - ${itemConfig.type}`);
-    }
-  }
-};
-const displayPrompt = function (session, item, isErrorPrompt) {
-  let message = isErrorPrompt ? item.errorPrompt : item.prompt;
-  if ("function" == typeof message) {
-    return message.call(null, session, item, message)
-  } else {
-    if (Array.isArray(message)) {
-      message = message.slice();
-      while (message.length > 1) {
-        session.send(message.shift());
-      }
-    }
-    switch (item.type) {
-      case 'number':
-      case 'text':
-      case 'email':
-      case 'url':
-        builder.Prompts.text(session, message);
-        break;
-      case 'boolean':
-      case 'confirm' :
-        builder.Prompts.confirm(session, message, {
-          listStyle: builder.ListStyle.buttons,
-          retryPrompt: item.errorPrompt
-        });
-        break;
-      case 'time':
-        builder.Prompts.time(session, message, {
-          retryPrompt: item.errorPrompt
-        });
-        break;
-      case 'choice':
-        builder.Prompts.choice(session, message, item.choices, {
-          listStyle: builder.ListStyle.buttons,
-          retryPrompt: item.errorPrompt
-        });
-        break;
-      default:
-        throw new Error(`Unknown formflows item type - ${item.type}`)
-    }
-  }
-}
-const displayResult = function (session, item, result) {
-  if (item.response) {
-    if ("function" == typeof item.response) {
-      item.response.call(null, session, item, result);
-    } else if (["boolean", "confirm"].indexOf(item.type) > -1) {
-      var locale = session.preferredLocale();
-      var yes = session.localizer.gettext(locale, 'confirm_yes', 'BotBuilder');
-      var no = session.localizer.gettext(locale, 'confirm_no', 'BotBuilder');
-      session.send(sprintf(item.response, result.response ? yes : no));
-    } else if ('time' == item.type) {
-      let value = result.response.resolution ? result.response.resolution.start : result.response;
-      session.send(sprintf(item.response, new Date(value).toUTCString()))
-    } else {
-      session.send(sprintf(item.response, result.response));
-    }
-  }
-}
-
-const buildFieldDialog = function (bot, id, item) {
-  if (matchItem(item, 'dialog', () => !Array.isArray(item.dialog))) {
-    return;
-  }
-
-  if (matchItem(item, 'dialog', () => Array.isArray(item.dialog))) {
-    bot.dialog(id, item.dialog);
-  } else {
-    bot.dialog(id, [
-      (session, args) => {
-        let isErrorPrompt = args && ( builder.ResumeReason.reprompt == args.resumed );
-        displayPrompt(session, item, isErrorPrompt);
-      },
-      (session, response) => {
-        if (isValid(session, response, item)) {
-          displayResult(session, item, response);
-          firstRun = true;
-          session.endDialogWithResult({
-            response: extractValue(session, response, item)
-          });
-        } else {
-          session.replaceDialog(id, {
-            resumed: builder.ResumeReason.reprompt
-          });
-        }
-      }
-    ]);
-  }
-
-}
 const getFormFlowWrapper = function (bot, config) {
   let flow = [];
   let results = {};
@@ -228,6 +44,7 @@ const getFormFlowWrapper = function (bot, config) {
   });
   return flow;
 }
+
 const validateConfig = function (config) {
 
   config.forEach((item, i) => {
@@ -257,13 +74,24 @@ Object with issues: ${JSON.stringify(item, null, 4)}`;
     } else if (( item.type != 'dialog' && !item.prompt)) {
       throw throwError(`Prompt field required for non-dialogs.\nItem: ${JSON.stringify(item)}`);
     }
+
+
+    let validator = {};
+    if (item.validator) {
+      if ("function" == typeof item.validator) {
+        validator['callback'] = item.validator;
+      } else {
+        validator = item.validator;
+      }
+    }
+    item.validator = Object.assign({
+      '@default': getDefaultValidatorForType(item.type)
+    }, validator);
     config[i] = Object.assign({
       errorPrompt: item.prompt,
       response: 'Selected %s',
-      validator: null,
       extractor: null
     }, item);
-
   });
 }
 
