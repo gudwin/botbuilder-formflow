@@ -34,7 +34,11 @@ They return the user's response by calling session.endDialogWithresult().
 So, this Library will allow your bot to request information about complex forms from user. 
 The Library helps to build a waterfall dialog that will handle the whole 
 form flow. It will split a complex form in a list of fields. Each field evaluated separately 
-and could be fully customized. 
+and could be fully customized.
+The Library features:
+- Standard Prompts plus prompts for emails and urls;
+- Validators, Prompts, Error Prompts and Value extractors could be customized by users;
+- Support for subdialogs;
   
 The Library provides a factory function `create` used to create FormFlows forms. 
 This function will create and inject a Waterfall dialog into a bot.
