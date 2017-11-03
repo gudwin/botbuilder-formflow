@@ -65,7 +65,7 @@ const validateConfig = function (config) {
       throw throwError(`Type ${item.type} not supported`);
     }
     if (matchItem(item, 'choice', () => !item.choices)) {
-      let message = `"choices" attribute MUST be defined.
+      let message = `"choice" attribute MUST be defined.
 Object with issues: ${JSON.stringify(item, null, 4)}`;
       throw throwError(message);
     }
