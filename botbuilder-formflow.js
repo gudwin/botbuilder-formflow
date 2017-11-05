@@ -1,5 +1,4 @@
-const SupportedTypes = ['text', 'number', 'boolean', 'confirm', 'email', 'time', 'url', 'choice', 'dialog'];
-const RequiredProperties = ['id', 'type'];
+const SupportedTypes = ['text', 'number', 'boolean', 'confirm', 'email', 'time', 'url', 'choice', 'dialog', 'custom'];
 const uuid = require('node-uuid');
 const builder = require('botbuilder');
 const buildFieldDialog = require('./src/buildFieldDialog');
@@ -55,12 +54,12 @@ const validateConfig = function (config) {
     if (!(item instanceof Object )) {
       throwError('Every item in a config must be an object.');
     }
-    RequiredProperties.forEach((propertyName) => {
-      if (!item.hasOwnProperty(propertyName)) {
-        let message = `Every item in a config MUST have next properties: ${RequiredProperties.join(',')}`;
-        throw throwError(message);
-      }
-    });
+
+    if (!item.hasOwnProperty("type")) {
+      let message = 'Every item in a config MUST have "type" property';
+      throw throwError(message);
+    }
+
     if (-1 == SupportedTypes.indexOf(item.type)) {
       throw throwError(`Type ${item.type} not supported`);
     }
@@ -71,8 +70,6 @@ Object with issues: ${JSON.stringify(item, null, 4)}`;
     }
     if (matchItem(item, 'dialog', () => !item.dialog)) {
       throw throwError(`Empty "dialog" property`);
-    } else if (( item.type != 'dialog' && !item.prompt)) {
-      throw throwError(`Prompt field required for non-dialogs.\nItem: ${JSON.stringify(item)}`);
     }
 
 
@@ -89,14 +86,12 @@ Object with issues: ${JSON.stringify(item, null, 4)}`;
     }, validator);
     config[i] = Object.assign({
       errorPrompt: item.prompt,
-      response: 'Selected %s',
       extractor: null
     }, item);
   });
 }
 
 module.exports.SupportedTypes = SupportedTypes;
-module.exports.RequiredProperties = RequiredProperties;
 module.exports.create = function (bot, dialogName, config) {
   validateConfig(config);
   let formFlow = getFormFlowWrapper(bot, config);
