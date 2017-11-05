@@ -1,15 +1,15 @@
 module.exports = [
   {
-    "out": "hi"
+    "user": "hi"
   },
   {
-    "in": "Please enter a text value",
-    "out": "Hello world!"
+    "bot": "Please enter a text value"
+  },
+  {"user": "Hello world!"},
+  {
+    "bot": "You selected Hello world!"
   },
   {
-    "in": "You selected Hello world!",
-  },
-  {
-    "in": "{\"value\":\"Hello world!\"}",
+    "bot": "{\"value\":\"Hello world!\"}"
   }
 ];

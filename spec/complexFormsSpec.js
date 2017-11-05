@@ -1,7 +1,8 @@
-const botTester = require('./botTester');
+
 const botFactory = require('./botFactory');
 const loadFlow = require('./loadForm');
 const formFlow = require('../botbuilder-formflow');
+const botTester = require('botbuilder-unit');
 
 describe('Tests for complex forms', function () {
   let bot = null;
@@ -25,7 +26,7 @@ describe('Tests for complex forms', function () {
         session.endDialog(JSON.stringify(result.response));
       }]);
     let messages = require('./scripts/complexPrompts/partiallyFilledScript');
-    botTester.testBot(bot, messages, done);
+    botTester(bot, messages).then(done);
   });
   it('That all types ready to be prepopulated', function (done) {
     let config = require('./flows/complexPrompts/filledForm.js');
@@ -46,6 +47,6 @@ describe('Tests for complex forms', function () {
         session.endDialog(JSON.stringify(result.response));
       }]);
     let messages = require('./scripts/complexPrompts/filledScript');
-    botTester.testBot(bot, messages, done);
+    botTester(bot, messages).then(done)
   })
 });

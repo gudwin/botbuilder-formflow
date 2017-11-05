@@ -9,7 +9,7 @@ describe('Tests for complex validators in forms', function () {
     bot = botFactory.create();
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   });
-  it('Test that forms with multiple prompts supported', function (done) {
+  it('Test that all specified validators will be executed', function (done) {
     loadFlow(bot, 'complexValidatorPrompts/currencyExchangeForm', done);
   });
 

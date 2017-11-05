@@ -10,6 +10,7 @@
     "botbuilder": "^3.8.2"
   },
   "devDependencies": {
+    "botbuilder-unit" : "0.*",
     "assert": "^1.4.1",
     "jasmine": "^2.5.3",
     "jasmine-terminal-reporter": "^1.0.3",

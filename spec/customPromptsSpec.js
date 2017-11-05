@@ -1,8 +1,9 @@
-const botTester = require('./botTester');
+
 const botFactory = require('./botFactory');
 const loadFlow = require('./loadForm');
 const builder = require('botbuilder');
 const formFlow = require('../botbuilder-formflow');
+const botTester = require('botbuilder-unit');
 
 describe('Tests for custom prompts', function () {
   let bot = null;
@@ -12,6 +13,9 @@ describe('Tests for custom prompts', function () {
   });
   it('Test for custom validators, prompts and extractor', function (done) {
     loadFlow(bot, 'customPrompts/customForm', done);
+  });
+  it('Test prompt without id',function (done) {
+    loadFlow(bot, 'customPrompts/emptyIdForm', done);
   });
   it('Test that subdialogs supported', function (done) {
     let config = require('./flows/customPrompts/subdialogForm.js');
@@ -31,6 +35,7 @@ describe('Tests for custom prompts', function () {
       }
     ]);
     let messages = require('./scripts/customPrompts/subdialogScript');
-    botTester.testBot(bot, messages, done);
+    botTester(bot, messages).then(done)
   });
+
 });

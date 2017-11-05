@@ -1,8 +1,7 @@
 # botbuilder-formflow
 Form flow support for Microsoft Bot Framework. 
 
-Unfortunately, I'm still struggling with myself over this documentation. 
-Please use tests as a documentation for now. 
+Unfortunately, I'm still struggling with myself over this documentation.  Please use tests as a documentation for now. 
 
 Tests located at **spec/**** folder.
  
@@ -61,24 +60,18 @@ Every item in the array mentioned above should have at least two attributes:
 - *type* attribute used to identify validators and business logic.
 
 ## Prompt Types
-Every type could bring its own default validation, custom behaviour and 
-could require additional attributes.
-- **choices** - A wrapper around [builder.Prompt.choice](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#choice) Prompt. 
-**Required attributes**:
--- choices (string | Object | string[] | IChoice[]), Explained in [function arguments](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#choice);
-- **confirm** - A wrapper around [builder.Prompts.confirm](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#confirm) Prompt;
-- **dialog** - Allows to redirect flow execution to an external dialog
-**Required attributes****:
--- dialog (String|Array|Function) a route to a dialog or a constructor for Waterfall dialog;
-for Waterfall dialog
+Every type could bring its own default validation, custom behaviour and could require additional attributes.
+
+- **choices**(string | Object | string[] | IChoice[]) - A wrapper around [builder.Prompt.choice](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#choice) Prompt. 
+- **confirm** - A wrapper around [builder.Prompts.confirm](https://docs.botframeworkx.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#confirm) Prompt;
+- **custom* - Use that type to inject your prompts; 
+- **dialog** - dialog (String|Array|Function) a route to a dialog or a constructor for Waterfall dialog;
 - **email** - A wrapper around `/^\S+@\S+$/` RegExp
 - **number** - A wrapper around [builder.PromptRecognizers.recognizeNumbers()](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.ipromptrecognizenumbersoptions.html) internal BotBuilder function;
 - **text** - A wrapper around [builder.Prompts.text](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#text) Prompt;
 - **time** - A wrapper around [botbuilder.PromptRecognizers.recognizeTimes](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.ipromptrecognizetimesoptions.html) internal BotBuilder function;
 - **url** - A wrapper around `/^(ftp|http|https):\/\/[^ "]+$/` RegExp
 
-
- 
 ## Examples
 
 1. [Simple registration form](https://github.com/gudwin/botbuilder-formflow/blob/master/examples/signup.js)

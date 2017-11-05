@@ -24,7 +24,5 @@ module.exports = [
     "prompt": "Please enter your email",
     "errorPrompt": "Error, Please enter your email",
     "response": "Your email is %s"
-  },
-
-
+  }
 ]

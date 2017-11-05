@@ -3,6 +3,12 @@ module.exports = [
     "user": "hi"
   },
   {
+    "bot": "Hello world!"
+  },
+  {
+    "bot": "Thank you!"
+  },
+  {
     "bot": "Please enter your password"
 
   },
@@ -11,6 +17,6 @@ module.exports = [
     "bot": "Your password is qwerty"
   },
   {
-    "bot": "{\"login\":\"Anonymous\",\"email\":\"email@email.com\",\"password\":\"qwerty\"}",
+    "bot": "{\"password\":\"qwerty\"}"
   }
 ];

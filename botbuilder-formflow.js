@@ -29,7 +29,10 @@ const getFormFlowWrapper = function (bot, config) {
     });
     flow.push((session, response, next) => {
       if (builder.ResumeReason.forward != response.resumed) {
-        results[fieldName] = response.response;
+        if ( fieldName ) {
+          results[fieldName] = response.response;
+        }
+
       }
       next();
     });

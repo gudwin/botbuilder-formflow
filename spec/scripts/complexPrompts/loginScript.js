@@ -1,31 +1,32 @@
 module.exports = [
   {
-    "out": "hi"
+    "user": "hi"
   },
   {
-    "in": "Please enter your login",
-    "out": "Anonymous"
+    "bot": "Please enter your login"
+  },
+  {"user": "Anonymous"},
+  {
+    "bot": "Your login is Anonymous"
   },
   {
-    "in": "Your login is Anonymous",
+    "bot": "Please enter your password"
+
   },
+  {"user": "qwerty"},
   {
-    "in": "Please enter your password",
-    "out": "qwerty"
-  },
-  {
-    "in": "Your password is qwerty",
+    "bot": "Your password is qwerty"
   },
 
   {
-    "in": "Please enter your email",
-    "out": "email@email.com"
+    "bot": "Please enter your email"
   },
+  {"user": "email@email.com"},
   {
-    "in": "Your email is email@email.com",
+    "bot": "Your email is email@email.com"
   },
 
   {
-    "in": "{\"login\":\"Anonymous\",\"password\":\"qwerty\",\"email\":\"email@email.com\"}"
+    "bot": "{\"login\":\"Anonymous\",\"password\":\"qwerty\",\"email\":\"email@email.com\"}"
   }
 ];

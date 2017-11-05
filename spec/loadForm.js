@@ -1,5 +1,5 @@
 const formFlow = require('../botbuilder-formflow');
-const botTester = require('./botTester');
+const unit = require('botbuilder-unit');
 
 module.exports = function (bot, fileName, done) {
   let config = require('./flows/' + fileName);
@@ -11,5 +11,5 @@ module.exports = function (bot, fileName, done) {
       session.endDialog(JSON.stringify(result.response));
     }]);
   let messages = require('./scripts/' + fileName.replace('Form', 'Script'));
-  botTester.testBot(bot, messages, done);
+  unit(bot, messages).then( done );
 }

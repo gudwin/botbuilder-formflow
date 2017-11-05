@@ -1,30 +1,32 @@
 module.exports = [
   {
-    "out": "hi"
+    "user": "hi"
   },
   {
-    "in": "Please enter a boolean value",
-    "out": "NotAValue"
+    "bot": "Please enter a boolean value"
+  },
+  { "user" : "NotAValue"},
+  {
+    "bot": "I don't understand that. Could you say 'yes' or 'no'?"
   },
   {
-    "in": "I don't understand that. Could you say 'yes' or 'no'?",
-    "out": "yes"
+    "user" : "yes",
   },
   {
-    "in": "You selected yes"
+    "bot": "You selected yes"
   },
   {
-    "in": "{\"value\":true}",
-    "out" : "hi"
+    "bot": "{\"value\":true}",
+  },
+  { "user" : "hi"},
+  {
+    "bot": "Please enter a boolean value"
+  },
+  {"user" : "no"},
+  {
+    "bot": "You selected no"
   },
   {
-    "in": "Please enter a boolean value",
-    "out": "no"
-  },
-  {
-    "in": "You selected no"
-  },
-  {
-    "in" : "{\"value\":false}"
+    "bot" : "{\"value\":false}"
   }
 ];
