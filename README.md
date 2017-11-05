@@ -37,7 +37,7 @@ use them to build complex and comprehensive form dialogs.
 
 So, this Library will allow your bot to request complex forms from a user. 
 It helps to build a waterfall dialog that will handle the whole form flow. 
-The form will be splitted in a list of dialogs required for each each. You can use predefined 
+The library will split into a list of dialogs required for each field. You can use predefined 
 prompts or create you custom dialog wrappers around MBF prompts. Dialogs for each field evaluated separately 
 and could be customized.
 The Library features:

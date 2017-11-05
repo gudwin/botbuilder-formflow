@@ -1,0 +1,13 @@
+-
+- Provide support for stop/cancelation words
+- Provide an ability to switch between fields you want to update
+- Replace types with classes based on Validator class
+# Validator class:
+# # message : string
+# # id : string
+# # errorMessage : string | Array
+# # optional : string
+# # rules : Array
+# # response : TemplateString
+
+

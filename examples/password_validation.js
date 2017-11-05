@@ -14,7 +14,7 @@ let signupForm = [
     "prompt": "Please enter your password",
     "errorPrompt": ["Minimal password length is 6 symbols", "Please re-enter password"],
     "response": "Your password is %s",
-    "validator": (session, response) => response.response.length >= 6,
+    "validator": (session, response) => response.response.length >= 6
   }
 ];
 

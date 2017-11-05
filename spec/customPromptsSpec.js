@@ -14,7 +14,6 @@ describe('Tests for custom prompts', function () {
     loadFlow(bot, 'customPrompts/customForm', done);
   });
   it('Test that subdialogs supported', function (done) {
-
     let config = require('./flows/customPrompts/subdialogForm.js');
     formFlow.create(bot, '/test', config);
     bot.dialog('/', [
