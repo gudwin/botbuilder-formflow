@@ -3,7 +3,7 @@
     "node": "7.8.0"
   },
   "name": "botbuilder-formflow",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Form flow with subdialogs",
   "main": "botbuilder-formflow.js",
   "dependencies": {

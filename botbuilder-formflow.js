@@ -14,8 +14,7 @@ const getFormFlowWrapper = function (bot, config) {
   });
   config.forEach((item, index, next) => {
     let fieldName = item.id;
-    let isDialogName = matchItem(item, 'dialog', () => "string" == typeof(item.dialog));
-    let dialogId = isDialogName ? item.dialog : '/' + uuid.v4();
+    let dialogId = `/FormFlow_${fieldName}_${uuid.v4()}`;
 
     flow.push((session, args, next) => {
       if ("undefined" != typeof results[fieldName]) {
@@ -36,6 +35,7 @@ const getFormFlowWrapper = function (bot, config) {
       }
       next();
     });
+
     buildFieldDialog(bot, dialogId, item);
 
   });
@@ -87,10 +87,6 @@ Object with issues: ${JSON.stringify(item, null, 4)}`;
     item.validator = Object.assign({
       '@default': getDefaultValidatorForType(item.type)
     }, validator);
-    config[i] = Object.assign({
-      errorPrompt: item.prompt,
-      extractor: null
-    }, item);
   });
 }
 
@@ -101,3 +97,4 @@ module.exports.create = function (bot, dialogName, config) {
   bot.dialog(dialogName, formFlow);
   return formFlow;
 };
+module.exports.SwitchDialog = require('./src/prompts/SwitchDialog');

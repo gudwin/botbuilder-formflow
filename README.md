@@ -53,24 +53,58 @@ Typical usage:
 Where:
 - *bot* is an actual instance of [UniversalBot](https://docs.botframework.com/en-us/node/builder/chat-reference/classes/_botbuilder_d_.universalbot.html);
 - *'/form'* - a Id for FormFlow dialog;
-- *formConfig* - an array, each item contains a config for a result form field;
+- *formConfig* - an array, each item contains a configuration of prompt for a field;
    
-Every item in the array mentioned above should have at least two attributes: 
-- *id* attribute used to identify a value in a form result;
-- *type* attribute used to identify validators and business logic.
+
+## Field Attributes
+- **required** **type** - (String) attribute used to identify validators and business logic.
+- **id** - (String) 
+- **prompt** - (String|Function) 
+- **errorPrompt** - (String|Function) 
+- **validator** - (String|Function|Object)
+- **response** - (String|Function)
+- **extractor** - (String|Function)
 
 ## Prompt Types
 Every type could bring its own default validation, custom behaviour and could require additional attributes.
 
 - **choices**(string | Object | string[] | IChoice[]) - A wrapper around [builder.Prompt.choice](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#choice) Prompt. 
 - **confirm** - A wrapper around [builder.Prompts.confirm](https://docs.botframeworkx.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#confirm) Prompt;
-- **custom* - Use that type to inject your prompts; 
-- **dialog** - dialog (String|Array|Function) a route to a dialog or a constructor for Waterfall dialog;
+- **custom** - Use that type to inject your prompts; 
+- **dialog** - dialog (String|Array|Function) a route to a dialog or a constructor for Waterfall dialog. This option also requires next attributes to be defined:
+  - **dialog** - (String|Array|Function) Waterfall dialog;  
 - **email** - A wrapper around `/^\S+@\S+$/` RegExp
 - **number** - A wrapper around [builder.PromptRecognizers.recognizeNumbers()](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.ipromptrecognizenumbersoptions.html) internal BotBuilder function;
 - **text** - A wrapper around [builder.Prompts.text](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#text) Prompt;
 - **time** - A wrapper around [botbuilder.PromptRecognizers.recognizeTimes](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.ipromptrecognizetimesoptions.html) internal BotBuilder function;
 - **url** - A wrapper around `/^(ftp|http|https):\/\/[^ "]+$/` RegExp
+
+## Built-in Complex Dialogs
+
+### SwitchDialog
+
+The purpose of this prompt to display list of choices and depending on user choice to forward conversation to selected dialog. List of choices is a key-value object where key is a label that will be displayed to user and value is id of the dialog or waterfall array, in that case SwitchDialog will register it in the bot automatically 
+
+**Example**
+
+```javascript
+const FormFlow = require('botbuilder-formflow');
+
+new FormFlow.SwitchDialog({
+    id : 'subdialog',  // Results will be stored in `subdialog` propterty
+    prompt : 'Please, select subdialog', // Prompt message for a user
+    choices : {   
+      'Add' : '/add',
+      'Remove' : [
+        function ( session ) {
+          session.endDialogWithResult({
+            "response":'Hello world!'
+          });
+        }
+      ]
+    }
+  })
+```
 
 ## Examples
 
@@ -90,3 +124,6 @@ Every type could bring its own default validation, custom behaviour and could re
 ```
     npm test
 ```
+
+# Changelog
+- 0.3.0 - SwitchDialog introduced, "init" step introduced

@@ -5,7 +5,6 @@ const matchItem = require('./matchItem');
 const choicesToList = require('./choicesToList');
 
 
-
 const isValid = function (session, response, itemConfig) {
   return new Promise(function (resolve, reject) {
     let errorPrompt = itemConfig.errorPrompt;
@@ -24,16 +23,16 @@ const isValid = function (session, response, itemConfig) {
           if ("object" == typeof obj[key]) {
             result = iterateObject(obj[key], keyError);
           } else {
-            result = obj[key].call(null, session, response, itemConfig, keyError);
+            result = obj[key].call(itemConfig, session, response, itemConfig, keyError);
           }
-          if ( result instanceof Promise ) {
-            all.push( result );
+          if (result instanceof Promise) {
+            all.push(result);
           } else {
             all.push(result ? Promise.resolve(true) : Promise.reject(keyError));
           }
 
         }
-        if ( !result) {
+        if (!result) {
           break;
         }
       }
@@ -43,7 +42,7 @@ const isValid = function (session, response, itemConfig) {
     function resolveError(error) {
       let result = '';
       if ("function" == typeof error) {
-        result = error.call(null, session, response, itemConfig);
+        result = error.call(itemConfig, session, response, itemConfig);
       } else if (error instanceof Error) {
         result = error.message;
       } else if (error) {
@@ -56,7 +55,6 @@ const isValid = function (session, response, itemConfig) {
 
     iterateValidators(itemConfig.validator, errorPrompt);
     result = Promise.all(all);
-
 
     if (result instanceof Promise) {
       result.then(function () {
@@ -78,45 +76,47 @@ const isValid = function (session, response, itemConfig) {
 
 };
 const extractValue = function (session, response, itemConfig) {
-    if ("function" == typeof itemConfig.extractor) {
-      return itemConfig.extractor.call(null, session, response)
-    }
-    else {
-      let text = session.message.text.trim();
-      let entities;
-      switch (itemConfig.type) {
-        case 'number' :
-          return builder.PromptRecognizers.recognizeNumbers(session, response.response)[0].entity
-          break;
-        case 'text':
-        case 'email':
-        case 'url' :
-        case 'boolean':
-        case 'confirm' :
-        case 'dialog' :
-          return response.response;
-          break;
-        case 'time' :
-          entities = builder.PromptRecognizers.recognizeTimes(session);
-          let result = entities[0].resolution.start;
-          result.setMilliseconds(0);
-          return result;
-          break;
-        case 'choice' :
-          entities = builder.PromptRecognizers.recognizeChoices(response.response.entity, choicesToList(itemConfig.choices));
-          return entities[0].entity;
-          break;
-        default:
-          throw new Error(`unknown type - ${itemConfig.type}`);
-      }
+  if ("function" == typeof itemConfig.extractor) {
+    return itemConfig.extractor.call(itemConfig, session, response)
+  }
+  else {
+    let text = session.message.text.trim();
+    let entities;
+    switch (itemConfig.type) {
+      case 'number' :
+        return builder.PromptRecognizers.recognizeNumbers(session, response.response)[0].entity
+        break;
+      case 'text':
+      case 'email':
+      case 'url' :
+      case 'boolean':
+      case 'confirm' :
+      case 'dialog' :
+        return response.response;
+        break;
+      case 'time' :
+        entities = builder.PromptRecognizers.recognizeTimes(session);
+        let result = entities[0].resolution.start;
+        result.setMilliseconds(0);
+        return result;
+        break;
+      case 'choice' :
+        entities = builder.PromptRecognizers.recognizeChoices(response.response.entity, choicesToList(itemConfig.choices));
+        return entities[0].entity;
+        break;
+      case 'custom':
+        return null;
+        break;
+      default:
+        throw new Error(`Unable to extract value - ${itemConfig.type}`);
     }
   }
-  ;
+};
 
 
-const displayPrompt = function (session, item, message) {
+const displayPrompt = function (session, item, message, next) {
   if ("function" == typeof message) {
-    return message.call(null, session, item, message)
+    return message.call(item, session, item, message, next)
   } else {
     if (Array.isArray(message)) {
       message = message.slice();
@@ -149,6 +149,13 @@ const displayPrompt = function (session, item, message) {
           retryPrompt: item.errorPrompt
         });
         break;
+      case 'custom':
+        session.send(message);
+        next();
+        break;
+      case 'dialog' :
+        session.beginDialog(item.dialog);
+        break;
       default:
         throw new Error(`Unknown formflows item type - ${item.type}`)
     }
@@ -158,7 +165,7 @@ const displayPrompt = function (session, item, message) {
 const displayResult = function (session, item, result) {
   if (item.response) {
     if ("function" == typeof item.response) {
-      item.response.call(null, session, item, result);
+      item.response.call(item, session, item, result);
     } else if (["boolean", "confirm"].indexOf(item.type) > -1) {
       var locale = session.preferredLocale();
       var yes = session.localizer.gettext(locale, 'confirm_yes', 'BotBuilder');
@@ -173,18 +180,17 @@ const displayResult = function (session, item, result) {
   }
 }
 
-module.exports = function ( bot, id,item) {
-  if (matchItem(item, 'dialog', () => !Array.isArray(item.dialog))) {
-    return;
+module.exports = function (bot, id, item) {
+  if (item.initialize) {
+    item.initialize(bot, id, item);
   }
-
   if (matchItem(item, 'dialog', () => Array.isArray(item.dialog))) {
     bot.dialog(id, item.dialog);
   } else {
     bot.dialog(id, [
-      (session, args) => {
-        let isErrorPrompt = "object" == typeof args && ( builder.ResumeReason.reprompt == args.resumed ) ;
-        displayPrompt(session, item, isErrorPrompt ? args.errorPrompt : item.prompt);
+      (session, args, next) => {
+        let isErrorPrompt = "object" == typeof args && ( builder.ResumeReason.reprompt == args.resumed );
+        displayPrompt(session, item, isErrorPrompt ? args.errorPrompt : item.prompt, next);
       },
       (session, response) => {
         isValid(session, response, item).then(function () {

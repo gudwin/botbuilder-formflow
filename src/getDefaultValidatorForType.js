@@ -41,6 +41,7 @@ const getDefaultValidatorForType = module.exports = function (type) {
         return entities.length > 0
       }
       break;
+    case 'custom' :
     default:
       result = () => true;
   }
