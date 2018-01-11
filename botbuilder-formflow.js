@@ -13,11 +13,10 @@ const getFormFlowWrapper = function (bot, config) {
     next();
   });
   config.forEach((item, index, next) => {
-    let fieldName = item.id;
-    let dialogId = `/FormFlow_${fieldName}_${uuid.v4()}`;
+    let dialogId = `/FormFlow_${item.id}_${uuid.v4()}`;
 
     flow.push((session, args, next) => {
-      if ("undefined" != typeof results[fieldName]) {
+      if ("undefined" != typeof results[item.id]) {
         next({
           resumed: builder.ResumeReason.forward,
           response: null
@@ -28,8 +27,8 @@ const getFormFlowWrapper = function (bot, config) {
     });
     flow.push((session, response, next) => {
       if (builder.ResumeReason.forward != response.resumed) {
-        if ( fieldName ) {
-          results[fieldName] = response.response;
+        if (item.id) {
+          results[item.id] = response.response;
         }
 
       }
@@ -54,18 +53,6 @@ const validateConfig = function (config) {
       throw new Error(message + `\nObject with issues: ${JSON.stringify(item, null, 4)})`);
     }
 
-    if (!(item instanceof Object )) {
-      throwError('Every item in a config must be an object.');
-    }
-
-    if (!item.hasOwnProperty("type")) {
-      let message = 'Every item in a config MUST have "type" property';
-      throw throwError(message);
-    }
-
-    if (-1 == SupportedTypes.indexOf(item.type)) {
-      throw throwError(`Type ${item.type} not supported`);
-    }
     if (matchItem(item, 'choice', () => !item.choices)) {
       let message = `"choice" attribute MUST be defined.
 Object with issues: ${JSON.stringify(item, null, 4)}`;

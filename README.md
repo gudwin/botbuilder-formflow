@@ -1,9 +1,5 @@
 # botbuilder-formflow
-Form flow support for Microsoft Bot Framework. 
-
-Unfortunately, I'm still struggling with myself over this documentation.  Please use tests as a documentation for now. 
-
-Tests located at **spec/**** folder.
+Messaging framework for Microsoft Bot Framework. Initially, allowed only to create formflows, but starting from version 0.4 could be used as a replacement for standard Waterfall dialogs.
  
 ## Glossary 
 
@@ -34,15 +30,14 @@ use them to build complex and comprehensive form dialogs.
 
 ## Overview 
 
-So, this Library will allow your bot to request complex forms from a user. 
-It helps to build a waterfall dialog that will handle the whole form flow. 
-The library will split into a list of dialogs required for each field. You can use predefined 
-prompts or create you custom dialog wrappers around MBF prompts. Dialogs for each field evaluated separately 
-and could be customized.
+So, this Library allows helps you to build conversation dialogs with the user. The library accepts a flow and transforms it into a standard waterfall dialog. 
+ 
+You can use predefined  prompts or create you custom dialog wrappers around MBF prompts. Dialogs for each field evaluated separately and could be customized.
 The Library features:
 - Standard Prompts plus prompts for emails and urls;
 - Validators, Prompts, Error Prompts and Value extractors could be customized by a developer;
 - Subdialogs are supported;
+- Standard text messages and endConversation message;
   
 ## How To Create Form Flow 
 
@@ -78,6 +73,14 @@ Every type could bring its own default validation, custom behaviour and could re
 - **text** - A wrapper around [builder.Prompts.text](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#text) Prompt;
 - **time** - A wrapper around [botbuilder.PromptRecognizers.recognizeTimes](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.ipromptrecognizetimesoptions.html) internal BotBuilder function;
 - **url** - A wrapper around `/^(ftp|http|https):\/\/[^ "]+$/` RegExp
+
+## Basic Messaging
+
+If you want use standard messages (without prompts) in your flows, the Library allows that. 
+At current moment, there are two type of messages supported:
+
+- **message** - (String, Message, Function ) - sends a message to user, in case, if function passed as a value, than it should return a Promise object to signal the Library to continue execution;
+- **endConversation** - (String|Null) - sends a endConversation message, if string value passed than the Library will send it a normal message;
 
 ## Built-in Complex Dialogs
 
@@ -126,4 +129,5 @@ new FormFlow.SwitchDialog({
 ```
 
 # Changelog
+- 0.4.0 - Support for text messages and endConversation;
 - 0.3.0 - SwitchDialog introduced, "init" step introduced
