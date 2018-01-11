@@ -1,6 +1,7 @@
 const builder = require('botbuilder');
 const sprintf = require('sprintf');
 
+const messaging = require('./messaging');
 const matchItem = require('./matchItem');
 const choicesToList = require('./choicesToList');
 
@@ -186,6 +187,8 @@ module.exports = function (bot, id, item) {
   }
   if (matchItem(item, 'dialog', () => Array.isArray(item.dialog))) {
     bot.dialog(id, item.dialog);
+  } else if (messaging.isMessaging(item)) {
+    bot.dialog(id, messaging.processMessage(item));
   } else {
     bot.dialog(id, [
       (session, args, next) => {
