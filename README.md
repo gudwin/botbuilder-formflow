@@ -30,7 +30,7 @@ use them to build complex and comprehensive form dialogs.
 
 ## Overview 
 
-So, this Library allows helps you to build conversation dialogs with the user. The library accepts a flow and transforms it into a standard waterfall dialog. 
+So, this Library allowsx helps you to build conversation dialogs with the user. The library accepts a flow and transforms it into a standard waterfall dialog. 
  
 You can use predefined  prompts or create you custom dialog wrappers around MBF prompts. Dialogs for each field evaluated separately and could be customized.
 The Library features:
@@ -55,10 +55,11 @@ Where:
 - **required** **type** - (String) attribute used to identify validators and business logic.
 - **id** - (String) 
 - **prompt** - (String|Function) 
-- **errorPrompt** - (String|Function) 
+- **errorPrompt** or **error** - (String|Function) - that message will be displayed to a user in case, if users response failed validation
 - **validator** - (String|Function|Object)
 - **response** - (String|Function)
-- **extractor** - (String|Function)
+- **extractor** - (Function), a function which purpose to extract the response from dialog result. If extractor returns a Promise object, than resolved value of the promise will be treated as a result
+- **options** - (Object), an object that will be passed into standard MBF Prompt dialog as options argument 
 
 ## Prompt Types
 Every type could bring its own default validation, custom behaviour and could require additional attributes.
@@ -73,6 +74,7 @@ Every type could bring its own default validation, custom behaviour and could re
 - **text** - A wrapper around [builder.Prompts.text](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#text) Prompt;
 - **time** - A wrapper around [botbuilder.PromptRecognizers.recognizeTimes](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.ipromptrecognizetimesoptions.html) internal BotBuilder function;
 - **url** - A wrapper around `/^(ftp|http|https):\/\/[^ "]+$/` RegExp
+- **attachment** - Use that prompt for requesting attachments from the user
 
 ## Basic Messaging
 
@@ -129,5 +131,7 @@ new FormFlow.SwitchDialog({
 ```
 
 # Changelog
+
+- 0.4.1 - Support for attachment prompt;
 - 0.4.0 - Support for text messages and endConversation;
 - 0.3.0 - SwitchDialog introduced, "init" step introduced

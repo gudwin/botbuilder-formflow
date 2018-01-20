@@ -3,11 +3,12 @@
     "node": "7.8.0"
   },
   "name": "botbuilder-formflow",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Form flow with subdialogs",
   "main": "botbuilder-formflow.js",
   "dependencies": {
-    "botbuilder": "^3.8.2"
+    "botbuilder": "^3.8.2",
+    "botbuilder-get-attachment" : "^0.2.0"
   },
   "devDependencies": {
     "botbuilder-unit" : "0.*",
@@ -16,7 +17,14 @@
     "jasmine-terminal-reporter": "^1.0.3",
     "jshint": "^2.9.4",
     "node-uuid": "^1.4.8",
-    "sprintf": "^0.1.5"
+    "sprintf": "^0.1.5",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-jasmine": "^2.4.2",
+    "gulp-watch": "^4.3.11",
+    "gulp-jshint": "^2.0.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.1.2"
   },
   "scripts": {
     "test": "node ./spec/testRunner.js ",

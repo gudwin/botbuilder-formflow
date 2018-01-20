@@ -30,5 +30,9 @@ describe('Base tests suite for formflow', function () {
   it('Test for URL field', function ( done ) {
     loadFlow(bot,'basicPrompts/urlForm', done);
   });
+  it('Test for attachment field', function ( done ) {
+    loadFlow(bot,'basicPrompts/attachmentForm', done);
+  });
+
 
 })

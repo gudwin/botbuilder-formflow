@@ -4,7 +4,7 @@ module.exports = [
   {
     "type": "text",
     "id": "value",
-    "prompt": function (session, itemConfig, next) {
+    "prompt": function (session, itemConfig, promptMessage, next) {
       builder.Prompts.text(session,'Type prefix123 or prefix234 or prefix345');
     },
     errorPrompt: 'Please type one of these values prefix123, prefix234, prefix345',

@@ -1,4 +1,16 @@
-const SupportedTypes = ['text', 'number', 'boolean', 'confirm', 'email', 'time', 'url', 'choice', 'dialog', 'custom'];
+const SupportedTypes = [
+  'text',
+  'number',
+  'boolean',
+  'confirm',
+  'email',
+  'time',
+  'url',
+  'choice',
+  'dialog',
+  'file',
+  'attachment',
+  'custom'];
 const uuid = require('node-uuid');
 const builder = require('botbuilder');
 const buildFieldDialog = require('./src/buildFieldDialog');
@@ -30,7 +42,6 @@ const getFormFlowWrapper = function (bot, config) {
         if (item.id) {
           results[item.id] = response.response;
         }
-
       }
       next();
     });
@@ -47,7 +58,6 @@ const getFormFlowWrapper = function (bot, config) {
 }
 
 const validateConfig = function (config) {
-
   config.forEach((item, i) => {
     let throwError = (message) => {
       throw new Error(message + `\nObject with issues: ${JSON.stringify(item, null, 4)})`);
@@ -62,7 +72,6 @@ Object with issues: ${JSON.stringify(item, null, 4)}`;
       throw throwError(`Empty "dialog" property`);
     }
 
-
     let validator = {};
     if (item.validator) {
       if ("function" == typeof item.validator) {
@@ -74,6 +83,11 @@ Object with issues: ${JSON.stringify(item, null, 4)}`;
     item.validator = Object.assign({
       '@default': getDefaultValidatorForType(item.type)
     }, validator);
+
+    // If user typed "error" by mistake (errorPrompt should be used)
+    if ( item.error && (!item.errorPrompt)) {
+      item.errorPrompt = item.error;
+    }
   });
 }
 
