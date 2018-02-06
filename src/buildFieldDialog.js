@@ -168,7 +168,7 @@ const displayPrompt = function (session, item, promptMessage, next) {
         session.send(promptMessage);
         next();
         break;
-      case 'dialog' :
+      case 'dialog':
         session.beginDialog(item.dialog);
         break;
       default:

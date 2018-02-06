@@ -22,30 +22,29 @@ SwitchDialog.prototype.initialize = function (bot, dialogId, config) {
   this.dialog = this.buildDialog();
 }
 SwitchDialog.prototype.buildDialog = function () {
-  let choices = {};
+  let dialogChoices = {};
   for (let key in this.choices) {
     if (this.choices.hasOwnProperty(key)) {
-      choices[key] = key;
+      dialogChoices[key] = this.choices[key];
       if (Array.isArray(this.choices[key])) {
         let dialogName = `'SwitchDialog${uuid.v4()}`;
         this.bot.dialog(dialogName, this.choices[key]);
-        this.choices[key] = dialogName;
+        dialogChoices[key] = dialogName;
       }
     }
   }
   return [
     (session) => {
-
-      botbuilder.Prompts.choice(session, this.prompt, choices, {
+      botbuilder.Prompts.choice(session, this.prompt, dialogChoices, {
         listStyle: botbuilder.ListStyle.button,
         retryPrompt: this.errorPrompt ? this.errorPromp : this.prompt
       });
     },
     (session, response) => {
-
-      let dialogId = this.choices[response.response.entity];
-      session.beginDialog(dialogId);
-
+      let dialogId = dialogChoices[response.response.entity];
+      if ( dialogId ){
+        session.beginDialog(dialogId);
+      }
     },
     (session, response) => {
       session.endDialogWithResult(response);

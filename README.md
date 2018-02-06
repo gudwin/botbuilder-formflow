@@ -30,9 +30,8 @@ use them to build complex and comprehensive form dialogs.
 
 ## Overview 
 
-So, this Library allowsx helps you to build conversation dialogs with the user. The library accepts a flow and transforms it into a standard waterfall dialog. 
+So, this Library helps you to build conversation dialogs with the user. The library accepts a flow and transforms it into a standard waterfall dialog.  
  
-You can use predefined  prompts or create you custom dialog wrappers around MBF prompts. Dialogs for each field evaluated separately and could be customized.
 The Library features:
 - Standard Prompts plus prompts for emails and urls;
 - Validators, Prompts, Error Prompts and Value extractors could be customized by a developer;
@@ -62,6 +61,8 @@ Where:
 - **options** - (Object), an object that will be passed into standard MBF Prompt dialog as options argument 
 
 ## Prompt Types
+
+You can use predefined  prompts or custom dialog wrappers around MBF prompts. Dialogs for each field evaluated separately and could be customized.
 Every type could bring its own default validation, custom behaviour and could require additional attributes.
 
 - **choices**(string | Object | string[] | IChoice[]) - A wrapper around [builder.Prompt.choice](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.__global.iprompts.html#choice) Prompt. 
@@ -132,6 +133,7 @@ new FormFlow.SwitchDialog({
 
 # Changelog
 
+- 0.4.2 - Fixes for SwitchDialog;
 - 0.4.1 - Support for attachment prompt;
 - 0.4.0 - Support for text messages and endConversation;
 - 0.3.0 - SwitchDialog introduced, "init" step introduced
