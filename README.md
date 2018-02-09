@@ -112,6 +112,61 @@ new FormFlow.SwitchDialog({
   })
 ```
 
+### MenuDialog 
+
+This dialog provides a menu inside conversation. Menu items displayed as suggested actions for the user. 
+Dialog supports pagination of the results and labels for prev/next messages could be customized. 
+
+Options for MenuDialog:
+- **prompt** string **required** - Message text that will be delivered to a user 
+- **items** Object|Callback **required**: 
+  - key-value object, where key is a text of suggested action and value could be either an array (Waterfall Dialog) either string (dialog id) 
+  - Callback a function that should return a Promise. To display menu items the promise should be resolved with key-value object (described above) 
+- **items_per_message** int - amount of menu items to show per message
+- **prevLabel** string - label for "prev" message
+- **nextLabel** string - label for "next" message 
+
+Option with key-value configuration object: 
+```javascript
+const FormFlow = require('botbuilder-formflow');
+new FormFlow.MenuDialog({
+    message : '',
+    items : {
+        'make an order': '/order',
+        'menu 1' : '/menu1',
+        'menu 2' : '/menu2',
+        'menu 3' : '/menu3',
+        'exit' : [
+            function (session) {
+                session.endDialog()
+            }
+        ],
+        'help' : '/help' 
+    }
+});
+```
+
+Full featured example:
+```javascript
+new FormFlow.MenuDialog({
+    "prompt": "Menu items",
+    "items_per_message" : 5,
+    "prevLabel" : "<-",
+    "nextLabel" : "->",
+    "items" : {
+      'menu 0' : '/menu0',
+      'menu 1' : '/menu1',
+      'exit' : [function (session ) {
+        session.endConversation()
+      }],
+      'menu 3' : '/menu3',
+      'menu 4' : '/menu4',
+      'menu 5' : '/menu5',
+      'help' : '/help'
+    }
+  })
+```
+
 ## Examples
 
 1. [Simple registration form](https://github.com/gudwin/botbuilder-formflow/blob/master/examples/signup.js)
@@ -133,6 +188,7 @@ new FormFlow.SwitchDialog({
 
 # Changelog
 
+- 0.4.3 - New custom dialog "MenuDialog";
 - 0.4.2 - Fixes for SwitchDialog;
 - 0.4.1 - Support for attachment prompt;
 - 0.4.0 - Support for text messages and endConversation;

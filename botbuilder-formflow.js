@@ -98,4 +98,6 @@ module.exports.create = function (bot, dialogName, config) {
   bot.dialog(dialogName, formFlow);
   return formFlow;
 };
-module.exports.SwitchDialog = require('./src/prompts/SwitchDialog');
+module.exports.SwitchDialog = require('./src/custom/SwitchDialog');
+module.exports.MenuDialog = require('./src/custom/MenuDialog');
+module.exports.MenuPrompt = require('./src/custom/MenuPrompt');
