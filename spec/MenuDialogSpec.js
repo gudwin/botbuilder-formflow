@@ -72,6 +72,10 @@ describe('Testing MenuDialog', function () {
     defaultDialogs();
     testFlow('ShortFormWithCallback', done);
   });
+  fit('Testing with upper case',(done) => {
+    defaultDialogs();
+    testFlow('TestUpperCase', done);
+  });
   it('Testing with no choices (Should exit silently)', (done) => {
     let baseName = 'EmptyChoices';
     let scriptName = `./scripts/MenuDialog/${baseName}Script`;

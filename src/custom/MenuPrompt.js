@@ -21,7 +21,7 @@ function MenuPrompt(features) {
     let found = null;
     dc.chunkedItems.some((chunked) => {
       chunked.some((item)=> {
-        if (item.title == text) {
+        if (item.title.toLowerCase() == text) {
           found = item.value;
         }
       });

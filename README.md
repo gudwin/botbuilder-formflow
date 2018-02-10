@@ -205,6 +205,7 @@ new FormFlow.MenuDialog({
 
 # Changelog
 
+- 0.4.5 - Fixes for "MenuDialog";
 - 0.4.4 - Updates for "MenuDialog";
 - 0.4.3 - New custom dialog "MenuDialog";
 - 0.4.2 - Fixes for SwitchDialog;
