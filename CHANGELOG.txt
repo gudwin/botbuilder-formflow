@@ -1,0 +1,14 @@
+
+- [MAJOR] refactor documentation about MenuDialog, introduce MenuPrompt
+- [EXTENSION] new custom dialog:
+-- TimedDialog
+-- CarouselDialog
+-- ResultForm
+
+------------------------------
+ v 0.4.4
+- MenuDialog:
+-- items callback accepts session object
+-- empty list of items resolve to menu exit
+-- test with submenu dialog
+-- test that menu able to return a value

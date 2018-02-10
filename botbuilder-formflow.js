@@ -45,9 +45,7 @@ const getFormFlowWrapper = function (bot, config) {
       }
       next();
     });
-
     buildFieldDialog(bot, dialogId, item);
-
   });
   flow.push((session) => {
     session.endDialogWithResult({

@@ -33,7 +33,7 @@ gulp.task('tests', function () {
 
   restartProcess(command);
   // Callback mode, useful if any plugin in the pipeline depends on the `end`/`flush` event
-  return watch(['src/**/*.js', 'spec/**/*.js', 'index.js', 'testRunner.js', 'config/**/*.json'], function () {
+  return watch(['src/**/*.js', 'spec/**/*.js', 'botbuilder-formflow.js', 'testRunner.js', 'config/**/*.json'], function () {
     console.log('Restarting Tests');
     restartProcess(command);
   });

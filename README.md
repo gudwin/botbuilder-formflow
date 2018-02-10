@@ -157,7 +157,7 @@ new FormFlow.MenuDialog({
       'menu 0' : '/menu0',
       'menu 1' : '/menu1',
       'exit' : [function (session ) {
-        session.endConversation()
+        session.endDialog()
       }],
       'menu 3' : '/menu3',
       'menu 4' : '/menu4',
@@ -167,6 +167,23 @@ new FormFlow.MenuDialog({
   })
 ```
 
+It is possible to have submenu dialogs: 
+```javascript:
+new FormFlow.MenuDialog({
+    "prompt": "Menu items",
+    "retryPrompt" : "Fuck!",
+    "items" : {
+      'submenu' : new FormFlow.MenuDialog({
+        "prompt": "SubMenu items",
+        "items" : {
+          'submenu 0' : '/submenu0',
+          'submenu 1' : '/submenu1'
+        }
+      }),
+      'menu 0': '/menu0'
+    }
+  })
+```
 ## Examples
 
 1. [Simple registration form](https://github.com/gudwin/botbuilder-formflow/blob/master/examples/signup.js)
@@ -188,6 +205,7 @@ new FormFlow.MenuDialog({
 
 # Changelog
 
+- 0.4.4 - Updates for "MenuDialog";
 - 0.4.3 - New custom dialog "MenuDialog";
 - 0.4.2 - Fixes for SwitchDialog;
 - 0.4.1 - Support for attachment prompt;
