@@ -121,7 +121,7 @@ Options for MenuDialog:
 - **prompt** string **required** - Message text that will be delivered to a user 
 - **items** Object|Callback **required**: 
   - key-value object, where key is a text of suggested action and value could be either an array (Waterfall Dialog) either string (dialog id) 
-  - Callback a function that should return a Promise. To display menu items the promise should be resolved with key-value object (described above) 
+  - Callback a function that should return a Promise. Session object passed to the callback as an argument. To display menu items the promise should be resolved with key-value object (described above) 
 - **items_per_message** int - amount of menu items to show per message
 - **prevLabel** string - label for "prev" message
 - **nextLabel** string - label for "next" message 
@@ -153,16 +153,11 @@ new FormFlow.MenuDialog({
     "items_per_message" : 5,
     "prevLabel" : "<-",
     "nextLabel" : "->",
-    "items" : {
-      'menu 0' : '/menu0',
-      'menu 1' : '/menu1',
-      'exit' : [function (session ) {
-        session.endDialog()
-      }],
-      'menu 3' : '/menu3',
-      'menu 4' : '/menu4',
-      'menu 5' : '/menu5',
-      'help' : '/help'
+    "items" : function (session) {
+      return Promise.resolve({
+        'make an order': '/order',
+        'menu 1' : '/menu1',
+      })
     }
   })
 ```
