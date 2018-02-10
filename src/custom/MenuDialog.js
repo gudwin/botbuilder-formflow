@@ -22,7 +22,7 @@ MenuDialog.prototype.initialize = function (bot, dialogId, config) {
   bot.dialog(promptDialogId, new MenuPrompt());
   this.dialog = [
     (session) => {
-      this.resolveItems(config)
+      this.resolveItems(config,session)
         .then((items) => {
           config.items = items;
           if ( this.isEmptyItems(items )) {
@@ -58,7 +58,7 @@ MenuDialog.prototype.isEmptyItems = function ( items ) {
   }
   return true;
 }
-MenuDialog.prototype.resolveItems = function (options) {
+MenuDialog.prototype.resolveItems = function (options,session) {
   if (this.resolvedItems != null) {
     return Promise.resolve(this.resolvedItems);
   }
@@ -67,7 +67,7 @@ MenuDialog.prototype.resolveItems = function (options) {
     throw new Error("MenuPrompt.items mandatory attribute")
   }
   if ("function" == typeof options.items) {
-    promise = options.items.call(null);
+    promise = options.items.call(null,session);
     if (!(promise instanceof Promise)) {
       throw new Error("MenuPrompt.items callback must return a Promise");
     }

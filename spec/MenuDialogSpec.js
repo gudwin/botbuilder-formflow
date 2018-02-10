@@ -123,5 +123,9 @@ describe('Testing MenuDialog', function () {
       session.endDialog('You are in submenu');
     })
     testFlow('Submenu', done);
+  });
+  it('Testing that callback arguments passed',(done) => {
+    defaultDialogs();
+    testFlow('CallbackParams', done);
   })
 })

@@ -11,8 +11,6 @@ module.exports = [
     "id": "second",
     "prompt": "Please upload second attachment",
     "response" : function (session, item, result ) {
-      console.log('----------------- RESULT -------------------');
-      console.log(result);
       session.send(result.response[0].name);
       session.send(result.response[0].content);
     }
