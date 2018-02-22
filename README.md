@@ -1,4 +1,23 @@
+Table of Contents
+=================
+
+   * [botbuilder-formflow](#botbuilder-formflow)
+      * [Glossary](#glossary)
+      * [Overview](#overview)
+      * [How To Create Form Flow](#how-to-create-form-flow)
+      * [Field Attributes](#field-attributes)
+      * [Prompt Types](#prompt-types)
+      * [Basic Messaging](#basic-messaging)
+      * [Built-in Complex Dialogs](#built-in-complex-dialogs)
+         * [SwitchDialog](#switchdialog)
+         * [MenuDialog](#menudialog)
+      * [Examples](#examples)
+      * [Installation](#installation)
+      * [Tests](#tests)
+   * [Changelog](#changelog)
+
 # botbuilder-formflow
+
 Messaging framework for Microsoft Bot Framework. Initially, allowed only to create formflows, but starting from version 0.4 could be used as a replacement for standard Waterfall dialogs.
  
 ## Glossary 
@@ -37,7 +56,13 @@ The Library features:
 - Validators, Prompts, Error Prompts and Value extractors could be customized by a developer;
 - Subdialogs are supported;
 - Standard text messages and endConversation message;
-  
+
+## Installation
+
+```
+    npm install --save botbuilder-formflow
+```
+
 ## How To Create Form Flow 
 
 The Library provides a factory function `create` used to create FormFlows forms. 
@@ -47,10 +72,9 @@ Typical usage:
 Where:
 - *bot* is an actual instance of [UniversalBot](https://docs.botframework.com/en-us/node/builder/chat-reference/classes/_botbuilder_d_.universalbot.html);
 - *'/form'* - a Id for FormFlow dialog;
-- *formConfig* - an array, each item contains a configuration of prompt for a field;
+- *formFlow* - an array, each item contains a configuration of prompt for a field;
    
-
-## Field Attributes
+## FormFlow Items 
 - **required** **type** - (String) attribute used to identify validators and business logic.
 - **id** - (String) 
 - **prompt** - (String|Function) 
@@ -179,27 +203,35 @@ new FormFlow.MenuDialog({
     }
   })
 ```
-## Examples
+
+# How To Extend the Library
+ 
+You could extend steps library with your own. The object exposed by Library in its exports section is a instance of EventEmitter. You only need to subscribe on **buildFieldDialog** event. The event listener will accept four arguments:
+  - bot Object - Bot instance
+  - id string - dialog id 
+  - stepConfig Object - configuration of the step 
+  - steps array - contains array of steps that will be organized in a result dialog for the field.
+      
+```javascript
+const formFlow = require('botbuilder-formflow');
+
+```   
+#  Examples
 
 1. [Simple registration form](https://github.com/gudwin/botbuilder-formflow/blob/master/examples/signup.js)
 2. [Custom validator for a field](https://github.com/gudwin/botbuilder-formflow/blob/master/examples/password_validation.js)
 3. [Form with a subform](https://github.com/gudwin/botbuilder-formflow/blob/master/examples/subform.js)
 4. [List of validators for specific fields](https://github.com/gudwin/botbuilder-formflow/blob/master/examples/multiple_validation.js)
+5. [Comperehensive menu](https://github.com/gudwin/botbuilder-formflow/blob/master/examples/menu.js)
 
-## Installation
 
-```
-    npm install --save botbuilder-formflow
-```
 
-## Tests
- 
-```
-    npm test
-```
+      
+
 
 # Changelog
 
+- 0.5.0 - Extensions supported, Menu example prepared;
 - 0.4.5 - Fixes for "MenuDialog";
 - 0.4.4 - Updates for "MenuDialog";
 - 0.4.3 - New custom dialog "MenuDialog";

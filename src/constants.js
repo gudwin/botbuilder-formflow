@@ -1,0 +1,4 @@
+const BUILD_FIELD_DIALOG_EVENT = 'buildFieldDialog';
+module.exports = {
+  BUILD_FIELD_DIALOG_EVENT : BUILD_FIELD_DIALOG_EVENT
+}

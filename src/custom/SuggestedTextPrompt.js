@@ -1,33 +1,31 @@
-const matchItem = require('../matchItem');
 const formFlowConsts = require('../consts');
 const MenuPrompt = require('./MenuPrompt');
-
 const botbuilder = require('botbuilder');
-function MenuDialog(config) {
+function SuggestedTextPrompt(config) {
   this.type = 'dialog';
   this.bot = null;
   this.dialog = [];
-  this.resolvedItems = null;
+  this.suggestedItems  = null;
   for (var key in config) {
     if (config.hasOwnProperty(key)) {
       this[key] = config[key];
     }
   }
   if (!config.items) {
-    throw ('Failed to instantinate MenuDialog - property "items" undefined!')
+    throw ('Failed to instantinate SuggestedTextPrompt - property "items" undefined!')
   }
 }
 
-MenuDialog.prototype.initialize = function (bot, dialogId, config) {
+SuggestedTextPrompt.prototype.initialize = function (bot, dialogId, config) {
   config = Object.assign({}, config);
   let promptDialogId = 'MenuPrompt_' + dialogId;
   bot.dialog(promptDialogId, new MenuPrompt());
   this.dialog = [
     (session) => {
-      this.resolveItems(config, session)
+      this.resolveItems(config,session)
         .then((items) => {
           config.items = items;
-          if (this.isEmptyItems(items)) {
+          if ( this.isEmptyItems(items )) {
             session.endDialog();
           }
           if (!config.retryPrompt) {
@@ -52,15 +50,15 @@ MenuDialog.prototype.initialize = function (bot, dialogId, config) {
 
 
 }
-MenuDialog.prototype.isEmptyItems = function (items) {
-  for (let key in items) {
-    if (items.hasOwnProperty(key)) {
+SuggestedTextPrompt.prototype.isEmptyItems = function ( items ) {
+  for (let key in items ) {
+    if ( items.hasOwnProperty(key)) {
       return false;
     }
   }
   return true;
 }
-MenuDialog.prototype.resolveItems = function (options, session) {
+SuggestedTextPrompt.prototype.resolveItems = function (options,session) {
   if (this.resolvedItems != null) {
     return Promise.resolve(this.resolvedItems);
   }
@@ -69,7 +67,7 @@ MenuDialog.prototype.resolveItems = function (options, session) {
     throw new Error("MenuPrompt.items mandatory attribute")
   }
   if ("function" == typeof options.items) {
-    promise = options.items.call(null, session);
+    promise = options.items.call(null,session);
     if (!(promise instanceof Promise)) {
       throw new Error("MenuPrompt.items callback must return a Promise");
     }
@@ -78,14 +76,4 @@ MenuDialog.prototype.resolveItems = function (options, session) {
   }
   return promise;
 }
-MenuDialog.factory = function (bot, id, stepConfig, steps) {
-  if (matchItem(stepConfig, 'menu-dialog', () => true)) {
-    let dialog = new MenuDialog(stepConfig);
-    dialog.initialize(bot, id, stepConfig);
-    dialog.dialog.forEach((item)=>steps.push(item));
-  } else if (stepConfig instanceof MenuDialog) {
-    stepConfig.initialize(bot, id, stepConfig);
-    stepConfig.dialog.forEach((item) => steps.push(item));
-  }
-}
-module.exports = MenuDialog;
+module.exports = SuggestedTextPrompt;

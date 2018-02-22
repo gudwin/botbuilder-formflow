@@ -1,9 +1,15 @@
 
 - [MAJOR] refactor documentation about MenuDialog, introduce MenuPrompt
 - [EXTENSION] new custom dialog:
--- TimedDialog
+
 -- CarouselDialog
 -- ResultForm
+
+------------------------------
+ v 0.5.0
+- autoloadable classes (type map)
+- new example based on MenuDialog
+- new prompt with suggested actions
 
 ------------------------------
  v 0.4.4

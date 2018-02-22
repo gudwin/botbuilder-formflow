@@ -1,5 +1,8 @@
+const matchItem = require('../matchItem');
+
 const botbuilder = require('botbuilder');
 const uuid = require('node-uuid');
+
 function SwitchDialog(config) {
   this.type = 'dialog';
   this.bot = null;
@@ -42,7 +45,7 @@ SwitchDialog.prototype.buildDialog = function () {
     },
     (session, response) => {
       let dialogId = dialogChoices[response.response.entity];
-      if ( dialogId ){
+      if (dialogId) {
         session.beginDialog(dialogId);
       }
     },
@@ -50,6 +53,18 @@ SwitchDialog.prototype.buildDialog = function () {
       session.endDialogWithResult(response);
     }
   ]
+}
+SwitchDialog.factory = function (bot, id, stepConfig, steps) {
+  if (matchItem(stepConfig, 'switch-dialog', () => true)) {
+    let dialog = new SwitchDialog(stepConfig);
+    dialog.initialize(bot, id, stepConfig )
+    dialog.dialog.forEach(steps.push);
+  } else if ( stepConfig instanceof SwitchDialog ) {
+    stepConfig.initialize(bot, id, stepConfig );
+    stepConfig.dialog.forEach((item) => {
+      steps.push(item)
+    });
+  }
 }
 
 module.exports = SwitchDialog;

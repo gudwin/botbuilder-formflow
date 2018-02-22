@@ -12,7 +12,6 @@ module.exports = [
   { "user": "5 minutes ago" },
   {
     "bot": function (message) {
-      console.log(arguments);
       let receivedMilliseconds = Date.parse(message.text.split('You selected ')[1]);
       let diff = (new Date().getTime()) - receivedMilliseconds;
       diff = diff - 300 * 1000;

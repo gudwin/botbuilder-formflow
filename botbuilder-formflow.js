@@ -1,101 +1,42 @@
-const SupportedTypes = [
-  'text',
-  'number',
-  'boolean',
-  'confirm',
-  'email',
-  'time',
-  'url',
-  'choice',
-  'dialog',
-  'file',
-  'attachment',
-  'custom'];
-const uuid = require('node-uuid');
-const builder = require('botbuilder');
-const buildFieldDialog = require('./src/buildFieldDialog');
+const constants = require('./src/constants');
+const MenuDialog = require('./src/custom/MenuDialog');
+const MenuPrompt = require('./src/custom/MenuPrompt');
+const SwitchDialog = require('./src/custom/SwitchDialog');
+const messaging = require('./src/messaging');
 const matchItem = require('./src/matchItem');
-const getDefaultValidatorForType = require('./src/getDefaultValidatorForType');
+const PromptDialogs = require('./src/PromptDialogs');
+const getFormFlowWrapper = require('./src/getFormFlowWrapper');
+const EventEmitter = require('events');
 
-const getFormFlowWrapper = function (bot, config) {
-  let flow = [];
-  let results = {};
-  flow.push(function (session, args, next) {
-    results = args ? args : {};
-    next();
-  });
-  config.forEach((item, index, next) => {
-    let dialogId = `/FormFlow_${item.id}_${uuid.v4()}`;
+const library = new EventEmitter();
 
-    flow.push((session, args, next) => {
-      if ("undefined" != typeof results[item.id]) {
-        next({
-          resumed: builder.ResumeReason.forward,
-          response: null
-        });
-      } else {
-        session.beginDialog(dialogId);
-      }
-    });
-    flow.push((session, response, next) => {
-      if (builder.ResumeReason.forward != response.resumed) {
-        if (item.id) {
-          results[item.id] = response.response;
-        }
-      }
-      next();
-    });
-    buildFieldDialog(bot, dialogId, item);
-  });
-  flow.push((session) => {
-    session.endDialogWithResult({
-      response: results
-    });
-  });
-  return flow;
-}
+library.SwitchDialog = SwitchDialog;
+library.MenuDialog = MenuDialog;
+library.MenuPrompt = MenuPrompt;
+library.constants = constants;
 
-const validateConfig = function (config) {
-  config.forEach((item, i) => {
-    let throwError = (message) => {
-      throw new Error(message + `\nObject with issues: ${JSON.stringify(item, null, 4)})`);
-    }
+/**
+ * DEPRECATED since 0.5 version
+ * @type {string[]}
+ */
+library.SupportedTypes = PromptDialogs.SUPPORTED_TYPES;
 
-    if (matchItem(item, 'choice', () => !item.choices)) {
-      let message = `"choice" attribute MUST be defined.
-Object with issues: ${JSON.stringify(item, null, 4)}`;
-      throw throwError(message);
-    }
-    if (matchItem(item, 'dialog', () => !item.dialog)) {
-      throw throwError(`Empty "dialog" property`);
-    }
-
-    let validator = {};
-    if (item.validator) {
-      if ("function" == typeof item.validator) {
-        validator['callback'] = item.validator;
-      } else {
-        validator = item.validator;
-      }
-    }
-    item.validator = Object.assign({
-      '@default': getDefaultValidatorForType(item.type)
-    }, validator);
-
-    // If user typed "error" by mistake (errorPrompt should be used)
-    if ( item.error && (!item.errorPrompt)) {
-      item.errorPrompt = item.error;
-    }
-  });
-}
-
-module.exports.SupportedTypes = SupportedTypes;
-module.exports.create = function (bot, dialogName, config) {
-  validateConfig(config);
-  let formFlow = getFormFlowWrapper(bot, config);
+library.create = function (bot, dialogName, config) {
+  let formFlow = getFormFlowWrapper(library, bot, config);
   bot.dialog(dialogName, formFlow);
   return formFlow;
 };
-module.exports.SwitchDialog = require('./src/custom/SwitchDialog');
-module.exports.MenuDialog = require('./src/custom/MenuDialog');
-module.exports.MenuPrompt = require('./src/custom/MenuPrompt');
+
+library.on(constants.BUILD_FIELD_DIALOG_EVENT, (bot, id, stepConfig, steps) => {
+  if (matchItem(stepConfig, 'dialog', () => Array.isArray(stepConfig.dialog))) {
+    stepConfig.dialog.forEach((item) => steps.push(item));
+  } else if (messaging.isMessaging(stepConfig)) {
+    steps.push(messaging.processMessage(stepConfig));
+  } else if (PromptDialogs.isPrompt(stepConfig)) {
+    PromptDialogs(id, stepConfig).forEach((step) => steps.push(step));
+  }
+});
+library.on(constants.BUILD_FIELD_DIALOG_EVENT, SwitchDialog.factory)
+library.on(constants.BUILD_FIELD_DIALOG_EVENT, MenuDialog.factory)
+
+module.exports = library;

@@ -72,7 +72,7 @@ describe('Testing MenuDialog', function () {
     defaultDialogs();
     testFlow('ShortFormWithCallback', done);
   });
-  fit('Testing with upper case',(done) => {
+  it('Testing with upper case',(done) => {
     defaultDialogs();
     testFlow('TestUpperCase', done);
   });

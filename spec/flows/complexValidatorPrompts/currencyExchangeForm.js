@@ -23,17 +23,13 @@ module.exports = [
       },
       "not_a_number": function (session, response, itemConfig) {
         let values = response.response.trim().split(' ');
-        console.log(`parseFloat = "${parseFloat(values[0])}"`)
-        console.log( typeof parseFloat(values[0])  );
-        console.log( parseFloat(values[0]));
-
         return !Number.isNaN(parseFloat(values[0]));
       },
       "someRemoteValidation" : function ( session, response,itemConfig,errorPrompt ) {
         return new Promise( function (resolve, reject) {
          setTimeout(function () {
            let currency = response.response.trim().split(' ')[1].toUpperCase();
-           console.log(`Final currency - "${currency}"`)
+
            if ( currency == 'BTC') {
              resolve(true);
 
