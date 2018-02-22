@@ -1,5 +1,5 @@
 const builder = require('botbuilder');
-const formFlow = require('../../botbuilder-formflow');
+const formFlow = require('botbuilder-formflow');
 
 
 let exchangeForm = [
